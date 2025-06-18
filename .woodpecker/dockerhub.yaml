@@ -1,0 +1,28 @@
+when:
+  instance: ci.kokuwa.io
+  repo: woodpecker/docker
+  event: [manual, push]
+  branch: main
+  path: [.woodpecker/dockerhub.yaml, README.md]
+
+steps:
+
+  dockerd:
+    image: kokuwaio/dockerhub-metadata
+    depends_on: []
+    settings:
+      repository: kokuwaio/dockerd
+      description-short: Docker daemon for usage in WoodpeckerCI.
+      categories: [developer-tools, integration-and-delivery]
+      username: {from_secret: dockerhub_username}
+      password: {from_secret: dockerhub_password}
+
+  docker-cli:
+    image: kokuwaio/dockerhub-metadata
+    depends_on: []
+    settings:
+      repository: kokuwaio/docker-cli
+      description-short: Docker CLI for usage in WoodpeckerCI.
+      categories: [developer-tools, integration-and-delivery]
+      username: {from_secret: dockerhub_username}
+      password: {from_secret: dockerhub_password}

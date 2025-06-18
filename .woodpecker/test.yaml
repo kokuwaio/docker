@@ -1,0 +1,31 @@
+when:
+  instance: ci.kokuwa.io
+  repo: woodpecker/docker
+  event: pull_request
+  path: [.woodpecker/build.yaml, .woodpecker/test.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
+
+depends_on: [build]
+matrix:
+  PLATFORM: [amd64, arm64]
+labels:
+  platform: linux/${PLATFORM}
+
+services:
+  - name: dockerd
+    image: registry.kokuwa.io/kokuwaio/dockerd:ci-${CI_PIPELINE_NUMBER}-rootless
+    ports: [2375]
+    privileged: true
+
+steps:
+
+  info:
+    image: registry.kokuwa.io/kokuwaio/docker-cli:ci-${CI_PIPELINE_NUMBER}
+    commands: docker info
+
+  pull:
+    image: registry.kokuwa.io/kokuwaio/docker-cli:ci-${CI_PIPELINE_NUMBER}
+    commands: docker pull bash
+
+  run:
+    image: registry.kokuwa.io/kokuwaio/docker-cli:ci-${CI_PIPELINE_NUMBER}
+    commands: docker run --rm bash uname -a

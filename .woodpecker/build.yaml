@@ -1,0 +1,196 @@
+when:
+  instance: ci.kokuwa.io
+  repo: woodpecker/docker
+  event: [manual, push, pull_request]
+  branch: main
+  path: [.woodpecker/build.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
+
+variables:
+  - step: &pr
+      image: kokuwaio/buildctl
+      depends_on: []
+      settings: &settings-pr
+        platform: [linux/amd64, linux/arm64]
+        auth:
+          registry.kokuwa.io:
+            username: {from_secret: kokuwa_io_username}
+            password: {from_secret: kokuwa_io_password}
+        annotation: &annotation
+          org.opencontainers.image.title: Docker CLI for WoodpeckerCI
+          org.opencontainers.image.description: Docker CLI for usage in WoodpeckerCI.
+          org.opencontainers.image.url: $CI_REPO_URL
+          org.opencontainers.image.documentation: $CI_REPO_URL/README.md
+          org.opencontainers.image.source: $CI_REPO_CLONE_URL
+          org.opencontainers.image.revision: $CI_COMMIT_SHA
+          org.opencontainers.image.vendor: kokuwa.io
+          org.opencontainers.image.licenses: EUPL-1.2
+          org.opencontainers.image.ref.name: kokuwaio/docker-cli
+          org.opencontainers.image.version: 28.2.2
+      when:
+        event: pull_request
+  - step: &push
+      image: kokuwaio/buildctl
+      depends_on: []
+      settings: &settings-push
+        <<: *settings-pr
+        auth:
+          "https://index.docker.io/v1/":
+            username: {from_secret: docker_io_username}
+            password: {from_secret: docker_io_password}
+          ghcr.io:
+            username: {from_secret: ghcr_io_username}
+            password: {from_secret: ghcr_io_password}
+          registry.kokuwa.io:
+            username: {from_secret: kokuwa_io_username}
+            password: {from_secret: kokuwa_io_password}
+      when:
+        event: [manual, push]
+        branch: main
+
+steps:
+
+  dockerd-pr:
+    <<: *pr
+    settings:
+      <<: *settings-pr
+      name: registry.kokuwa.io/kokuwaio/dockerd:ci-${CI_PIPELINE_NUMBER}
+      target: dockerd
+      annotation:
+        <<: *annotation
+        org.opencontainers.image.title: Docker Daemon for WoodpeckerCI
+        org.opencontainers.image.description: Docker daemon for usage in WoodpeckerCI.
+        org.opencontainers.image.ref.name: kokuwaio/dockerd
+
+  dockerd-rootless-pr:
+    <<: *pr
+    settings:
+      <<: *settings-pr
+      name: registry.kokuwa.io/kokuwaio/dockerd:ci-${CI_PIPELINE_NUMBER}-rootless
+      target: dockerd-rootless
+      annotation:
+        <<: *annotation
+        org.opencontainers.image.title: Docker Daemon for WoodpeckerCI
+        org.opencontainers.image.description: Docker daemon for usage in WoodpeckerCI.
+        org.opencontainers.image.ref.name: kokuwaio/dockerd
+
+  cli-pr:
+    <<: *pr
+    settings:
+      <<: *settings-pr
+      name: registry.kokuwa.io/kokuwaio/docker-cli:ci-${CI_PIPELINE_NUMBER}
+      target: cli
+
+  cli-git-pr:
+    <<: *pr
+    depends_on: [cli-pr]
+    settings:
+      <<: *settings-pr
+      name: registry.kokuwa.io/kokuwaio/docker-cli:ci-${CI_PIPELINE_NUMBER}-git
+      target: cli-git
+
+  cli-az-pr:
+    <<: *pr
+    depends_on: [cli-pr]
+    settings:
+      <<: *settings-pr
+      name: registry.kokuwa.io/kokuwaio/docker-cli:ci-${CI_PIPELINE_NUMBER}-az
+      target: cli-az
+
+  cli-az-git-pr:
+    <<: *pr
+    depends_on: [cli-az-pr]
+    settings:
+      <<: *settings-pr
+      name: registry.kokuwa.io/kokuwaio/docker-cli:ci-${CI_PIPELINE_NUMBER}-az-git
+      target: cli-az-git
+
+  dockerd:
+    <<: *push
+    settings:
+      <<: *settings-push
+      name:
+        - registry.kokuwa.io/kokuwaio/dockerd:latest
+        - registry.kokuwa.io/kokuwaio/dockerd:28.2.2
+        - docker.io/kokuwaio/dockerd:latest
+        - docker.io/kokuwaio/dockerd:28.2.2
+        - ghcr.io/kokuwaio/dockerd:latest
+        - ghcr.io/kokuwaio/dockerd:28.2.2
+      target: dockerd
+      annotation:
+        <<: *annotation
+        org.opencontainers.image.title: Docker Daemon for WoodpeckerCI
+        org.opencontainers.image.description: Docker daemon for usage in WoodpeckerCI.
+        org.opencontainers.image.ref.name: kokuwaio/dockerd
+
+  dockerd-rootless:
+    <<: *push
+    settings:
+      <<: *settings-push
+      name:
+        - registry.kokuwa.io/kokuwaio/dockerd:rootless
+        - registry.kokuwa.io/kokuwaio/dockerd:28.2.2-rootless
+        - docker.io/kokuwaio/dockerd:rootless
+        - docker.io/kokuwaio/dockerd:28.2.2-rootless
+        - ghcr.io/kokuwaio/dockerd:rootless
+        - ghcr.io/kokuwaio/dockerd:28.2.2-rootless
+      target: dockerd-rootless
+      annotation:
+        <<: *annotation
+        org.opencontainers.image.title: Docker Daemon for WoodpeckerCI
+        org.opencontainers.image.description: Docker daemon for usage in WoodpeckerCI.
+        org.opencontainers.image.ref.name: kokuwaio/dockerd
+
+  cli:
+    <<: *push
+    settings:
+      <<: *settings-push
+      name:
+        - registry.kokuwa.io/kokuwaio/docker-cli:latest
+        - registry.kokuwa.io/kokuwaio/docker-cli:28.2.2
+        - docker.io/kokuwaio/docker-cli:latest
+        - docker.io/kokuwaio/docker-cli:28.2.2
+        - ghcr.io/kokuwaio/docker-cli:latest
+        - ghcr.io/kokuwaio/docker-cli:28.2.2
+      target: cli
+
+  cli-git:
+    <<: *push
+    depends_on: [cli]
+    settings:
+      <<: *settings-push
+      name:
+        - registry.kokuwa.io/kokuwaio/docker-cli:git
+        - registry.kokuwa.io/kokuwaio/docker-cli:28.2.2-git
+        - docker.io/kokuwaio/docker-cli:git
+        - docker.io/kokuwaio/docker-cli:28.2.2-git
+        - ghcr.io/kokuwaio/docker-cli:git
+        - ghcr.io/kokuwaio/docker-cli:28.2.2-git
+      target: cli-git
+
+  cli-az:
+    <<: *push
+    depends_on: [cli]
+    settings:
+      <<: *settings-push
+      name:
+        - registry.kokuwa.io/kokuwaio/docker-cli:az
+        - registry.kokuwa.io/kokuwaio/docker-cli:28.2.2-az
+        - docker.io/kokuwaio/docker-cli:az
+        - docker.io/kokuwaio/docker-cli:28.2.2-az
+        - ghcr.io/kokuwaio/docker-cli:az
+        - ghcr.io/kokuwaio/docker-cli:28.2.2-az
+      target: cli-az
+
+  cli-az-git:
+    <<: *push
+    depends_on: [cli-az]
+    settings:
+      <<: *settings-push
+      name:
+        - registry.kokuwa.io/kokuwaio/docker-cli:az-git
+        - registry.kokuwa.io/kokuwaio/docker-cli:28.2.2-az-git
+        - docker.io/kokuwaio/docker-cli:az-git
+        - docker.io/kokuwaio/docker-cli:28.2.2-az-git
+        - ghcr.io/kokuwaio/docker-cli:az-git
+        - ghcr.io/kokuwaio/docker-cli:28.2.2-az-git
+      target: cli-az-git
