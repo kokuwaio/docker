@@ -6,26 +6,26 @@ when:
 steps:
 
   renovate:
-    image: kokuwaio/renovate-config-validator
+    image: kokuwaio/renovate-config-validator:41
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, renovate.json]]
 
   yaml:
-    image: kokuwaio/yamllint
+    image: kokuwaio/yamllint:v1.37.1
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, .yamllint.yaml, "**/*.yaml"]]
 
   markdown:
-    image: kokuwaio/markdownlint
+    image: kokuwaio/markdownlint:0.45.0
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, .markdownlint.yaml, "**/*.md"]]
 
   dockerfile:
-    image: kokuwaio/hadolint
+    image: kokuwaio/hadolint:v2.12.0
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, "**/Dockerfile"]]
 
   shellcheck:
-    image: kokuwaio/shellcheck
+    image: kokuwaio/shellcheck:v0.10.0
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, "**/*.sh"]]
