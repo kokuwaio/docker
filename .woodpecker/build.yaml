@@ -11,6 +11,9 @@ variables:
       depends_on: []
       settings: &settings-pr
         platform: [linux/amd64, linux/arm64]
+        build-args:
+          PIP_INDEX_URL: ${PIP_INDEX_URL}
+          PIP_TRUSTED_HOST: ${PIP_TRUSTED_HOST}
         auth:
           registry.kokuwa.io:
             username: {from_secret: kokuwa_io_username}

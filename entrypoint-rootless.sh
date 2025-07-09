@@ -7,7 +7,7 @@ set -e;
 ## build command to execute
 ##
 
-COMMAND="dockerd --rootless --host=0.0.0.0:${DOCKERD_PORT:-2375} --tls=false --data-root=/home/docker --storage-driver=fuse-overlayfs --shutdown-timeout=${DOCKERD_SHUTDOWN_TIMEOUT:-0} --feature=buildkit=true --feature=containerd-snapshotter=true"
+COMMAND="dockerd --rootless --host=0.0.0.0:${DOCKERD_PORT:-2375} --tls=false --data-root=/home/rootless --shutdown-timeout=${DOCKERD_SHUTDOWN_TIMEOUT:-0} --feature=buildkit=true"
 if [[ -n "$DOCKERD_LOG_LEVEL" ]]; then
 	COMMAND+=" --log-level=$DOCKERD_LOG_LEVEL"
 fi
@@ -25,7 +25,7 @@ fi
 ## execute command
 ##
 
-export XDG_RUNTIME_DIR=/home/docker/runtime
+export XDG_RUNTIME_DIR=/home/rootless/.local/share/docker
 COMMAND="rootlesskit --publish=0.0.0.0:${DOCKERD_PORT:-2375}:${DOCKERD_PORT:-2375}/tcp --disable-host-loopback --copy-up=/etc --copy-up=/run --net=slirp4netns --slirp4netns-sandbox=auto --slirp4netns-seccomp=auto --port-driver=builtin $COMMAND"
 
 echo

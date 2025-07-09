@@ -22,6 +22,15 @@ Also usable with Gitlab, Github or locally, see examples for usage.
   - `az`: with Azure CLI
   - `az-git`: with Azure CLI and git
 
+| Image                                                                      | amd64 | arm64 |
+| -------------------------------------------------------------------------- |:-----:|:-----:|
+| [kokuwaio/dockerd](https://hub.docker.com/r/kokuwaio/dockerd)              | [![size](https://img.shields.io/docker/image-size/kokuwaio/dockerd/latest?arch=amd64&label=)](https://hub.docker.com/r/kokuwaio/dockerd)       | [![size](https://img.shields.io/docker/image-size/kokuwaio/dockerd/latest?arch=arm64&label=)](https://hub.docker.com/r/kokuwaio/dockerd)       |
+| [kokuwaio/dockerd:rootless](https://hub.docker.com/r/kokuwaio/dockerd)     | [![size](https://img.shields.io/docker/image-size/kokuwaio/dockerd/rootless?arch=amd64&label=)](https://hub.docker.com/r/kokuwaio/dockerd)     | [![size](https://img.shields.io/docker/image-size/kokuwaio/dockerd/rootless?arch=arm64&label=)](https://hub.docker.com/r/kokuwaio/dockerd)     |
+| [kokuwaio/docker-cli](https://hub.docker.com/r/kokuwaio/docker-cli)        | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/latest?arch=amd64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli) | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/latest?arch=arm64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli) |
+| [kokuwaio/docker-cli:git](https://hub.docker.com/r/kokuwaio/docker-cli)    | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/git?arch=amd64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli)    | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/git?arch=arm64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli)    |
+| [kokuwaio/docker-cli:az](https://hub.docker.com/r/kokuwaio/docker-cli)     | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/az?arch=amd64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli)     | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/az?arch=arm64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli)     |
+| [kokuwaio/docker-cli:az-git](https://hub.docker.com/r/kokuwaio/docker-cli) | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/az-git?arch=amd64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli) | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/az-git?arch=arm64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli) |
+
 ## Example
 
 ```yaml
