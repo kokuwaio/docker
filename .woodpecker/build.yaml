@@ -56,7 +56,7 @@ steps:
     <<: *pr
     settings:
       <<: *settings-pr
-      name: registry.kokuwa.io/kokuwaio/dockerd:ci-${CI_PIPELINE_NUMBER}
+      name: registry.kokuwa.io/kokuwaio/dockerd:ci-${CI_PIPELINE_NUMBER}-dockerd
       target: dockerd
       annotation:
         <<: *annotation

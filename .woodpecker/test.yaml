@@ -7,12 +7,13 @@ when:
 depends_on: [build]
 matrix:
   PLATFORM: [amd64, arm64]
+  IMAGE: [dockerd, rootless]
 labels:
   platform: linux/${PLATFORM}
 
 services:
   - name: dockerd
-    image: registry.kokuwa.io/kokuwaio/dockerd:ci-${CI_PIPELINE_NUMBER}-rootless
+    image: registry.kokuwa.io/kokuwaio/dockerd:ci-${CI_PIPELINE_NUMBER}-${IMAGE}
     ports: [2375]
     privileged: true
 
