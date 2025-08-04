@@ -12,18 +12,20 @@ RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	--mount=type=tmpfs,target=/var/log \
 	apt-get -qq update && \
 	apt-get -qq install --yes --no-install-recommends ca-certificates curl 
-RUN ARCH=$(dpkg --print-architecture) && curl --fail --silent --parallel --remote-name-all \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$ARCH/containerd.io_1.7.27-1_$ARCH.deb" \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$ARCH/docker-buildx-plugin_0.24.0-1~debian.12~bookworm_$ARCH.deb" \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$ARCH/docker-ce-cli_28.2.2-1~debian.12~bookworm_$ARCH.deb" \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$ARCH/docker-ce_28.2.2-1~debian.12~bookworm_$ARCH.deb" \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$ARCH/docker-ce-rootless-extras_28.2.2-1~debian.12~bookworm_$ARCH.deb"
+ARG TARGETARCH
+RUN curl --fail --silent --parallel --remote-name-all \
+		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/containerd.io_1.7.27-1_$TARGETARCH.deb" \
+		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/docker-buildx-plugin_0.24.0-1~debian.12~bookworm_$TARGETARCH.deb" \
+		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/docker-ce-cli_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
+		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/docker-ce_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
+		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/docker-ce-rootless-extras_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb"
 
 ##
 ## Docker Daemon
 ##
 
 FROM docker.io/library/debian:12.11-slim@sha256:2424c1850714a4d94666ec928e24d86de958646737b1d113f5b2207be44d37d8 AS dockerd
+ARG TARGETARCH
 RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	--mount=type=cache,target=/var/cache \
@@ -31,9 +33,9 @@ RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=tmpfs,target=/var/log \
 	apt-get -qq update && \
 	apt-get -qq install --yes --no-install-recommends ca-certificates \
-		"/tmp/docker/containerd.io_1.7.27-1_$(dpkg --print-architecture).deb" \
-		"/tmp/docker/docker-ce_28.2.2-1~debian.12~bookworm_$(dpkg --print-architecture).deb" \
-		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$(dpkg --print-architecture).deb"
+		"/tmp/docker/containerd.io_1.7.27-1_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb"
 COPY --chmod=555 entrypoint.sh /usr/bin/entrypoint.sh
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 
@@ -42,6 +44,7 @@ ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 ##
 
 FROM docker.io/library/debian:12.11-slim@sha256:2424c1850714a4d94666ec928e24d86de958646737b1d113f5b2207be44d37d8 AS dockerd-rootless
+ARG TARGETARCH
 RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	--mount=type=cache,target=/var/cache \
@@ -49,10 +52,10 @@ RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=tmpfs,target=/var/log \
 	apt-get -qq update && \
 	apt-get -qq install --yes --no-install-recommends ca-certificates uidmap slirp4netns dbus-user-session iproute2 \
-		"/tmp/docker/containerd.io_1.7.27-1_$(dpkg --print-architecture).deb" \
-		"/tmp/docker/docker-ce_28.2.2-1~debian.12~bookworm_$(dpkg --print-architecture).deb" \
-		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$(dpkg --print-architecture).deb" \
-		"/tmp/docker/docker-ce-rootless-extras_28.2.2-1~debian.12~bookworm_$(dpkg --print-architecture).deb"
+		"/tmp/docker/containerd.io_1.7.27-1_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce-rootless-extras_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb"
 RUN useradd rootless --uid 1000 --home-dir /home/rootless --create-home && rm -fr /etc/*- && \
 	echo rootless:100000:65536 >/etc/subuid && \
 	echo rootless:100000:65536 >/etc/subgid && \
@@ -70,6 +73,7 @@ USER 1000
 ##
 
 FROM docker.io/library/debian:12.11-slim@sha256:2424c1850714a4d94666ec928e24d86de958646737b1d113f5b2207be44d37d8 AS cli-base
+ARG TARGETARCH
 RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	--mount=type=cache,target=/var/cache \
@@ -77,8 +81,8 @@ RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=tmpfs,target=/var/log \
 	apt-get -qq update && \
 	apt-get -qq install --yes --no-install-recommends ca-certificates \
-		"/tmp/docker/docker-buildx-plugin_0.24.0-1~debian.12~bookworm_$(dpkg --print-architecture).deb" \
-		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$(dpkg --print-architecture).deb"
+		"/tmp/docker/docker-buildx-plugin_0.24.0-1~debian.12~bookworm_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb"
 ENV DOCKER_HOST=tcp://dockerd:2375
 ENV HOME=/woodpecker
 
