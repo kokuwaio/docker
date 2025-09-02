@@ -85,6 +85,7 @@ RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb"
 ENV DOCKER_HOST=tcp://dockerd:2375
 ENV HOME=/woodpecker
+RUN mkdir /woodpecker && chown 1000:1000 /woodpecker && chmod 777 /woodpecker
 
 FROM cli-base AS cli-base-az
 RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
