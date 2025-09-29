@@ -14,11 +14,11 @@ RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	apt-get -qq install --yes --no-install-recommends ca-certificates curl 
 ARG TARGETARCH
 RUN curl --fail --silent --parallel --remote-name-all \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/containerd.io_1.7.27-1_$TARGETARCH.deb" \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/docker-buildx-plugin_0.24.0-1~debian.12~bookworm_$TARGETARCH.deb" \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/docker-ce-cli_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/docker-ce_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
-		"https://download.docker.com/linux/debian/dists/bookworm/pool/stable/$TARGETARCH/docker-ce-rootless-extras_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb"
+		"https://download.docker.com/linux/debian/dists/trixie/pool/stable/$TARGETARCH/containerd.io_1.7.28-0~debian.13~trixie_$TARGETARCH.deb" \
+		"https://download.docker.com/linux/debian/dists/trixie/pool/stable/$TARGETARCH/docker-buildx-plugin_0.28.0-0~debian.13~trixie_$TARGETARCH.deb" \
+		"https://download.docker.com/linux/debian/dists/trixie/pool/stable/$TARGETARCH/docker-ce-cli_28.4.0-1~debian.13~trixie_$TARGETARCH.deb" \
+		"https://download.docker.com/linux/debian/dists/trixie/pool/stable/$TARGETARCH/docker-ce_28.4.0-1~debian.13~trixie_$TARGETARCH.deb" \
+		"https://download.docker.com/linux/debian/dists/trixie/pool/stable/$TARGETARCH/docker-ce-rootless-extras_28.4.0-1~debian.13~trixie_$TARGETARCH.deb"
 
 ##
 ## Docker Daemon
@@ -33,9 +33,9 @@ RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=tmpfs,target=/var/log \
 	apt-get -qq update && \
 	apt-get -qq install --yes --no-install-recommends ca-certificates \
-		"/tmp/docker/containerd.io_1.7.27-1_$TARGETARCH.deb" \
-		"/tmp/docker/docker-ce_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
-		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb"
+		"/tmp/docker/containerd.io_1.7.28-0~debian.13~trixie_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce_28.4.0-1~debian.13~trixie_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce-cli_28.4.0-1~debian.13~trixie_$TARGETARCH.deb"
 COPY --chmod=555 entrypoint.sh /usr/bin/entrypoint.sh
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 
@@ -52,10 +52,10 @@ RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=tmpfs,target=/var/log \
 	apt-get -qq update && \
 	apt-get -qq install --yes --no-install-recommends ca-certificates uidmap slirp4netns dbus-user-session iproute2 \
-		"/tmp/docker/containerd.io_1.7.27-1_$TARGETARCH.deb" \
-		"/tmp/docker/docker-ce_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
-		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb" \
-		"/tmp/docker/docker-ce-rootless-extras_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb"
+		"/tmp/docker/containerd.io_1.7.28-0~debian.13~trixie_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce_28.4.0-1~debian.13~trixie_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce-cli_28.4.0-1~debian.13~trixie_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce-rootless-extras_28.4.0-1~debian.13~trixie_$TARGETARCH.deb"
 RUN useradd rootless --uid 1000 --home-dir /home/rootless --create-home && rm -fr /etc/*- && \
 	echo rootless:100000:65536 >/etc/subuid && \
 	echo rootless:100000:65536 >/etc/subgid && \
@@ -81,9 +81,8 @@ RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=tmpfs,target=/var/log \
 	apt-get -qq update && \
 	apt-get -qq install --yes --no-install-recommends ca-certificates \
-		"/tmp/docker/docker-buildx-plugin_0.24.0-1~debian.12~bookworm_$TARGETARCH.deb" \
-		"/tmp/docker/docker-ce-cli_28.2.2-1~debian.12~bookworm_$TARGETARCH.deb"
-ENV DOCKER_HOST=tcp://dockerd:2375
+		"/tmp/docker/docker-buildx-plugin_0.28.0-0~debian.13~trixie_$TARGETARCH.deb" \
+		"/tmp/docker/docker-ce-cli_28.4.0-1~debian.13~trixie_$TARGETARCH.deb"
 ENV HOME=/woodpecker
 RUN mkdir /woodpecker && chown 1000:1000 /woodpecker && chmod 777 /woodpecker
 

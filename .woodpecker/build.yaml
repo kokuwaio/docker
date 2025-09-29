@@ -28,7 +28,7 @@ variables:
           org.opencontainers.image.vendor: kokuwa.io
           org.opencontainers.image.licenses: EUPL-1.2
           org.opencontainers.image.ref.name: kokuwaio/docker-cli
-          org.opencontainers.image.version: 28.2.2
+          org.opencontainers.image.version: 28.4.0
       when:
         event: pull_request
   - step: &push
@@ -113,11 +113,11 @@ steps:
       <<: *settings-push
       name:
         - registry.kokuwa.io/kokuwaio/dockerd:latest
-        - registry.kokuwa.io/kokuwaio/dockerd:28.2.2
+        - registry.kokuwa.io/kokuwaio/dockerd:28.4.0
         - docker.io/kokuwaio/dockerd:latest
-        - docker.io/kokuwaio/dockerd:28.2.2
+        - docker.io/kokuwaio/dockerd:28.4.0
         - ghcr.io/kokuwaio/dockerd:latest
-        - ghcr.io/kokuwaio/dockerd:28.2.2
+        - ghcr.io/kokuwaio/dockerd:28.4.0
       target: dockerd
       annotation:
         <<: *annotation
@@ -131,11 +131,11 @@ steps:
       <<: *settings-push
       name:
         - registry.kokuwa.io/kokuwaio/dockerd:rootless
-        - registry.kokuwa.io/kokuwaio/dockerd:28.2.2-rootless
+        - registry.kokuwa.io/kokuwaio/dockerd:28.4.0-rootless
         - docker.io/kokuwaio/dockerd:rootless
-        - docker.io/kokuwaio/dockerd:28.2.2-rootless
+        - docker.io/kokuwaio/dockerd:28.4.0-rootless
         - ghcr.io/kokuwaio/dockerd:rootless
-        - ghcr.io/kokuwaio/dockerd:28.2.2-rootless
+        - ghcr.io/kokuwaio/dockerd:28.4.0-rootless
       target: dockerd-rootless
       annotation:
         <<: *annotation
@@ -149,11 +149,11 @@ steps:
       <<: *settings-push
       name:
         - registry.kokuwa.io/kokuwaio/docker-cli:latest
-        - registry.kokuwa.io/kokuwaio/docker-cli:28.2.2
+        - registry.kokuwa.io/kokuwaio/docker-cli:28.4.0
         - docker.io/kokuwaio/docker-cli:latest
-        - docker.io/kokuwaio/docker-cli:28.2.2
+        - docker.io/kokuwaio/docker-cli:28.4.0
         - ghcr.io/kokuwaio/docker-cli:latest
-        - ghcr.io/kokuwaio/docker-cli:28.2.2
+        - ghcr.io/kokuwaio/docker-cli:28.4.0
       target: cli
 
   cli-git:
@@ -163,11 +163,11 @@ steps:
       <<: *settings-push
       name:
         - registry.kokuwa.io/kokuwaio/docker-cli:git
-        - registry.kokuwa.io/kokuwaio/docker-cli:28.2.2-git
+        - registry.kokuwa.io/kokuwaio/docker-cli:28.4.0-git
         - docker.io/kokuwaio/docker-cli:git
-        - docker.io/kokuwaio/docker-cli:28.2.2-git
+        - docker.io/kokuwaio/docker-cli:28.4.0-git
         - ghcr.io/kokuwaio/docker-cli:git
-        - ghcr.io/kokuwaio/docker-cli:28.2.2-git
+        - ghcr.io/kokuwaio/docker-cli:28.4.0-git
       target: cli-git
 
   cli-az:
@@ -177,11 +177,11 @@ steps:
       <<: *settings-push
       name:
         - registry.kokuwa.io/kokuwaio/docker-cli:az
-        - registry.kokuwa.io/kokuwaio/docker-cli:28.2.2-az
+        - registry.kokuwa.io/kokuwaio/docker-cli:28.4.0-az
         - docker.io/kokuwaio/docker-cli:az
-        - docker.io/kokuwaio/docker-cli:28.2.2-az
+        - docker.io/kokuwaio/docker-cli:28.4.0-az
         - ghcr.io/kokuwaio/docker-cli:az
-        - ghcr.io/kokuwaio/docker-cli:28.2.2-az
+        - ghcr.io/kokuwaio/docker-cli:28.4.0-az
       target: cli-az
 
   cli-az-git:
@@ -191,9 +191,9 @@ steps:
       <<: *settings-push
       name:
         - registry.kokuwa.io/kokuwaio/docker-cli:az-git
-        - registry.kokuwa.io/kokuwaio/docker-cli:28.2.2-az-git
+        - registry.kokuwa.io/kokuwaio/docker-cli:28.4.0-az-git
         - docker.io/kokuwaio/docker-cli:az-git
-        - docker.io/kokuwaio/docker-cli:28.2.2-az-git
+        - docker.io/kokuwaio/docker-cli:28.4.0-az-git
         - ghcr.io/kokuwaio/docker-cli:az-git
-        - ghcr.io/kokuwaio/docker-cli:28.2.2-az-git
+        - ghcr.io/kokuwaio/docker-cli:28.4.0-az-git
       target: cli-az-git
