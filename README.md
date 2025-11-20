@@ -22,8 +22,8 @@ Also usable with Gitlab, Github or locally, see examples for usage.
   - `az`: with Azure CLI
   - `az-git`: with Azure CLI and git
 
-| Image                                                                      | amd64 | arm64 |
-| -------------------------------------------------------------------------- |:-----:|:-----:|
+| Image                                                                      |                                                                     amd64                                                                      |                                                                     arm64                                                                      |
+| -------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------: |
 | [kokuwaio/dockerd](https://hub.docker.com/r/kokuwaio/dockerd)              | [![size](https://img.shields.io/docker/image-size/kokuwaio/dockerd/latest?arch=amd64&label=)](https://hub.docker.com/r/kokuwaio/dockerd)       | [![size](https://img.shields.io/docker/image-size/kokuwaio/dockerd/latest?arch=arm64&label=)](https://hub.docker.com/r/kokuwaio/dockerd)       |
 | [kokuwaio/dockerd:rootless](https://hub.docker.com/r/kokuwaio/dockerd)     | [![size](https://img.shields.io/docker/image-size/kokuwaio/dockerd/rootless?arch=amd64&label=)](https://hub.docker.com/r/kokuwaio/dockerd)     | [![size](https://img.shields.io/docker/image-size/kokuwaio/dockerd/rootless?arch=arm64&label=)](https://hub.docker.com/r/kokuwaio/dockerd)     |
 | [kokuwaio/docker-cli](https://hub.docker.com/r/kokuwaio/docker-cli)        | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/latest?arch=amd64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli) | [![size](https://img.shields.io/docker/image-size/kokuwaio/docker-cli/latest?arch=arm64&label=)](https://hub.docker.com/r/kokuwaio/docker-cli) |
@@ -47,10 +47,10 @@ steps:
 
 ## Settings
 
-| Environment               | Default | Description                                                                        |
-| ------------------------- | ------- | ---------------------------------------------------------------------------------- |
-| DOCKERD_PORT              | `2375`  | Specifies the port to listen on                                                    |
-| DOCKERD_SHUTDOWN_TIMEOUT  | `0`     | Set the default shutdown timeout                                                   |
-| DOCKERD_LOG_LEVEL         | `none`  | Set the [logging level](https://docs.docker.com/reference/cli/dockerd/#log-format) |
-| DOCKERD_REGISTRY_MIRROR   | `none`  | Specifies a list of registry mirrors.                                              |
+| Environment               | Default | Description                                                                                       |
+| ------------------------- | ------- | ------------------------------------------------------------------------------------------------- |
+| DOCKERD_PORT              | `2375`  | Specifies the port to listen on                                                                   |
+| DOCKERD_SHUTDOWN_TIMEOUT  | `0`     | Set the default shutdown timeout                                                                  |
+| DOCKERD_LOG_LEVEL         | `none`  | Set the [logging level](https://docs.docker.com/reference/cli/dockerd/#log-format)                |
+| DOCKERD_REGISTRY_MIRROR   | `none`  | Specifies a list of registry mirrors.                                                             |
 | DOCKERD_INSECURE_REGISTRY | `none   | Configure [insecure registry](https://docs.docker.com/reference/cli/dockerd/#insecure-registries) |
