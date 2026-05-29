@@ -94,7 +94,7 @@ RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	apt-get -qq install --yes --no-install-recommends python3 pip
 ARG PIP_INDEX_URL
 ARG PIP_TRUSTED_HOST
-RUN pip install azure-cli==2.66.0 --root-user-action=ignore --break-system-packages --no-cache-dir --progress-bar=off
+RUN pip install azure-cli==2.86.0 --root-user-action=ignore --break-system-packages --no-cache-dir --progress-bar=off
 ENV AZURE_CONFIG_DIR=/tmp/.azure
 
 FROM cli-base AS cli
