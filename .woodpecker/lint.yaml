@@ -10,6 +10,11 @@ steps:
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, renovate.json]]
 
+  just:
+    image: kokuwaio/just:1.51.0
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, .justfile]]
+
   dockerfile:
     image: kokuwaio/hadolint:v2.14.0
     depends_on: []

@@ -4,14 +4,14 @@
 ## Download docker
 ##
 
-FROM docker.io/library/debian:13.4-slim@sha256:cedb1ef40439206b673ee8b33a46a03a0c9fa90bf3732f54704f99cb061d2c5a AS download
+FROM --platform=$BUILDPLATFORM docker.io/library/debian:13.5-slim@sha256:b6e2a152f22a40ff69d92cb397223c906017e1391a73c952b588e51af8883bf8 AS download
 WORKDIR /tmp/docker
 RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	--mount=type=cache,target=/var/cache \
 	--mount=type=tmpfs,target=/var/lib/dpkg \
 	--mount=type=tmpfs,target=/var/log \
 	apt-get -qq update && \
-	apt-get -qq install --yes --no-install-recommends ca-certificates curl 
+	apt-get -qq install --yes --no-install-recommends ca-certificates curl
 ARG TARGETARCH
 RUN curl --fail --silent --parallel --remote-name-all \
 		"https://download.docker.com/linux/debian/dists/trixie/pool/stable/$TARGETARCH/containerd.io_1.7.28-0~debian.13~trixie_$TARGETARCH.deb" \
@@ -24,7 +24,7 @@ RUN curl --fail --silent --parallel --remote-name-all \
 ## Docker Daemon
 ##
 
-FROM docker.io/library/debian:13.4-slim@sha256:cedb1ef40439206b673ee8b33a46a03a0c9fa90bf3732f54704f99cb061d2c5a AS dockerd
+FROM docker.io/library/debian:13.5-slim@sha256:b6e2a152f22a40ff69d92cb397223c906017e1391a73c952b588e51af8883bf8 AS dockerd
 ARG TARGETARCH
 RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -43,7 +43,7 @@ ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 ## Docker Daemon (rootless)
 ##
 
-FROM docker.io/library/debian:13.4-slim@sha256:cedb1ef40439206b673ee8b33a46a03a0c9fa90bf3732f54704f99cb061d2c5a AS dockerd-rootless
+FROM docker.io/library/debian:13.5-slim@sha256:b6e2a152f22a40ff69d92cb397223c906017e1391a73c952b588e51af8883bf8 AS dockerd-rootless
 ARG TARGETARCH
 RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -57,22 +57,22 @@ RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 		"/tmp/docker/docker-ce-cli_28.4.0-1~debian.13~trixie_$TARGETARCH.deb" \
 		"/tmp/docker/docker-ce-rootless-extras_28.4.0-1~debian.13~trixie_$TARGETARCH.deb"
 RUN useradd rootless --uid 1000 --home-dir /home/rootless --create-home && rm -fr /etc/*- && \
-	echo rootless:100000:65536 >/etc/subuid && \
-	echo rootless:100000:65536 >/etc/subgid && \
+	echo rootless:100000:65536 >> /etc/subuid && \
+	echo rootless:100000:65536 >> /etc/subgid && \
 	mkdir /run/user -p && chmod 1777 /run/user && \
 	mkdir -p /home/rootless/.local/share/docker && \
-	chown -R rootless:rootless /home/rootless/.local/share/docker
+	chown -R rootless:rootless /home/rootless
 
 VOLUME /home/rootless/.local/share/docker
 COPY --chmod=555 entrypoint-rootless.sh /usr/bin/entrypoint.sh
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]
-USER 1000
+USER 1000:1000
 
 ##
 ## Docker CLI
 ##
 
-FROM docker.io/library/debian:13.4-slim@sha256:cedb1ef40439206b673ee8b33a46a03a0c9fa90bf3732f54704f99cb061d2c5a AS cli-base
+FROM docker.io/library/debian:13.5-slim@sha256:b6e2a152f22a40ff69d92cb397223c906017e1391a73c952b588e51af8883bf8 AS cli-base
 ARG TARGETARCH
 RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -83,8 +83,7 @@ RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	apt-get -qq install --yes --no-install-recommends ca-certificates \
 		"/tmp/docker/docker-buildx-plugin_0.28.0-0~debian.13~trixie_$TARGETARCH.deb" \
 		"/tmp/docker/docker-ce-cli_28.4.0-1~debian.13~trixie_$TARGETARCH.deb"
-ENV HOME=/woodpecker
-RUN mkdir /woodpecker && chown 1000:1000 /woodpecker && chmod 777 /woodpecker
+RUN mkdir /woodpecker && chown 1000:1000 /woodpecker && chmod -R 777 /woodpecker
 
 FROM cli-base AS cli-base-az
 RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -95,10 +94,8 @@ RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	apt-get -qq install --yes --no-install-recommends python3 pip
 ARG PIP_INDEX_URL
 ARG PIP_TRUSTED_HOST
-RUN --mount=type=cache,target=/var/cache pip install azure-cli==2.66.0 \
-		--root-user-action=ignore \
-		--break-system-packages \
-		--no-cache-dir
+RUN pip install azure-cli==2.66.0 --root-user-action=ignore --break-system-packages --no-cache-dir --progress-bar=off
+ENV AZURE_CONFIG_DIR=/tmp/.azure
 
 FROM cli-base AS cli
 USER 1000:1000

@@ -1,4 +1,13 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["kokuwaio/renovate-config"]
+	"extends": ["kokuwaio/renovate-config"],
+	"customManagers": [
+		{
+			"customType": "regex",
+			"managerFilePatterns": ["Dockerfile"],
+			"matchStrings": ["azure-cli==(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+)"],
+			"datasourceTemplate": "github-releases",
+			"packageNameTemplate": "Azure/azure-cli"
+		}
+	]
 }
