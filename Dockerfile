@@ -4,7 +4,7 @@
 ## Download docker
 ##
 
-FROM --platform=$BUILDPLATFORM docker.io/library/debian:13.6-slim@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a7bd AS download
+FROM --platform=$BUILDPLATFORM docker.io/library/debian:13.6-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258 AS download
 WORKDIR /tmp/docker
 RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	--mount=type=cache,target=/var/cache \
@@ -24,7 +24,7 @@ RUN curl --fail --silent --parallel --remote-name-all \
 ## Docker Daemon
 ##
 
-FROM docker.io/library/debian:13.6-slim@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a7bd AS dockerd
+FROM docker.io/library/debian:13.6-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258 AS dockerd
 ARG TARGETARCH
 RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -43,7 +43,7 @@ ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 ## Docker Daemon (rootless)
 ##
 
-FROM docker.io/library/debian:13.6-slim@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a7bd AS dockerd-rootless
+FROM docker.io/library/debian:13.6-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258 AS dockerd-rootless
 ARG TARGETARCH
 RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -72,7 +72,7 @@ USER 1000:1000
 ## Docker CLI
 ##
 
-FROM docker.io/library/debian:13.6-slim@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a7bd AS cli-base
+FROM docker.io/library/debian:13.6-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258 AS cli-base
 ARG TARGETARCH
 RUN --mount=type=bind,from=download,source=/tmp/docker,target=/tmp/docker \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
